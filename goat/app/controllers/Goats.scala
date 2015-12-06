@@ -17,31 +17,22 @@ class Goats extends Controller {
     goatO match {
       case None => Future.successful(BadRequest("me prend pas pour un con c'est pas une chèvre"))
       case Some(g) => {
-        val goatWithId = g.id.map{id => g}.getOrElse(g.copy(id = Some(UUID.randomUUID().toString) ))
+        val maybeNumber: Future[String] = Future("asdf")
+        val x: Future[String] = maybeNumber.flatMap(x => computeHeavy(x))
 
-        val clones: List[Goat] = (1 to 10).toList.map(clone(goatWithId, _))
+        val ps: List[Int] = List(4,2,5)
+        val pps: List[Int] = ps.map(p => p * 2)
+        val pps2: List[Int] = ps.flatMap(p => List(p * 2))
 
-        val goatList =  goatWithId :: clones
-//
-//        val content = goatList match{
-//          case Nil => "empty"
-//          case x::Nil => "just One"
-//          case x::Goat("blanchette", _, _)::Nil  => "just Two and first name : " + x.name
-//          case x::xs if goatList.size ==43 => "many"
-//          case _ => "unhandled"
-//        }
+        val result = for {
+          result1 <- computeHeavy("abc")
+          result2 <- computeHeavy(result1)
+          x = result2.isEmpty
+        } yield x
 
-        val savedGoats: List[Future[(String,Boolean)]] = goatList.map(_.save)  // Goat => Future[WsReesponse]
+        def computeHeavy(value: String) : Future[String] = Future{s"$value + $value"}
 
-        val eventualResponses: Future[List[(String,Boolean)]] = Future.sequence(savedGoats)
-
-        eventualResponses.map{ (wsresponses: List[(String,Boolean)]) =>
-         if(wsresponses.forall(b => b._2)){
-           Ok(Json.toJson(wsresponses.toMap))
-         }else{
-           BadRequest(Json.toJson(wsresponses.toMap))
-         }
-        }
+        ???
       }
     }
 
