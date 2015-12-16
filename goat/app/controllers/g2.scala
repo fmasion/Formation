@@ -10,7 +10,7 @@ import play.api.mvc._
 import scala.concurrent.Future
 
 
-class g2 extends Controller {
+class G2 extends Controller {
 
   lazy val f1 =  Future.successful(1)
   val f2 =  Future.successful(2)
